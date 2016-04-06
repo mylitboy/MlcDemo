@@ -23,6 +23,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
 import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity
@@ -185,15 +187,19 @@ public boolean onNavigationItemSelected(MenuItem item) {
     int id = item.getItemId();
 
     if (id == R.id.nav_camera) {
-
-        CameraFragment fragment = new CameraFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_main_layout, fragment).commit();
+        Intent intent = new Intent(); //调用照相机
+        intent.setAction("android.media.action.STILL_IMAGE_CAMERA");
+        startActivity(intent);
 
         // Handle the camera action
     } else if (id == R.id.nav_gallery) {
 
-    } else if (id == R.id.nav_slideshow) {
+        CameraFragment fragment = new CameraFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main_layout, fragment).commit();
 
+    } else if (id == R.id.nav_slideshow) {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+        intentIntegrator.initiateScan();
     } else if (id == R.id.nav_manage) {
 
     } else if (id == R.id.nav_share) {
