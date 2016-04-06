@@ -199,7 +199,8 @@ public boolean onNavigationItemSelected(MenuItem item) {
 
     } else if (id == R.id.nav_slideshow) {
         IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
-        intentIntegrator.initiateScan();
+        intentIntegrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
+
     } else if (id == R.id.nav_manage) {
 
     } else if (id == R.id.nav_share) {
