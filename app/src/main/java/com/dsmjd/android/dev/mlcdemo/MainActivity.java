@@ -57,40 +57,40 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
 //get NavigationView Obj
-NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
 //get NavigationView's HeaderLayout View
 //View header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
-View header_view = navigationView.getHeaderView(0);
+        View header_view = navigationView.getHeaderView(0);
 
 //get HeaderLayout("nav_header_main")'s ImageView(header_imageView) obj
-imageView = (ImageView) header_view.findViewById(R.id.header_imageView);
+        imageView = (ImageView) header_view.findViewById(R.id.header_imageView);
 //set imageView OnClick listener.
-imageView.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        CharSequence[] items = {"相册", "相机"};
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("选择图片来源")
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == SELECT_PICTURE) {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.addCategory(Intent.CATEGORY_OPENABLE);
-                            intent.setType("image/*");
-                            startActivityForResult(Intent.createChooser(intent, "选择图片"), SELECT_PICTURE);
-                        } else {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, SELECT_CAMER);
-                        }
-                    }
-                })
-                .create().show();
-    }
-});
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence[] items = {"相册", "相机"};
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("选择图片来源")
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == SELECT_PICTURE) {
+                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                    intent.setType("image/*");
+                                    startActivityForResult(Intent.createChooser(intent, "选择图片"), SELECT_PICTURE);
+                                } else {
+                                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    startActivityForResult(intent, SELECT_CAMER);
+                                }
+                            }
+                        })
+                        .create().show();
+            }
+        });
 
 //set navigationView's Items's Selected Listener.
-navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,36 +182,36 @@ navigationView.setNavigationItemSelectedListener(this);
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-public boolean onNavigationItemSelected(MenuItem item) {
-    // Handle navigation view item clicks here.f
-    int id = item.getItemId();
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.f
+        int id = item.getItemId();
 
-    if (id == R.id.nav_camera) {
-        Intent intent = new Intent(); //调用照相机
-        intent.setAction("android.media.action.STILL_IMAGE_CAMERA");
-        startActivity(intent);
+        if (id == R.id.nav_camera) {
+            Intent intent = new Intent(); //调用照相机
+            intent.setAction("android.media.action.STILL_IMAGE_CAMERA");
+            startActivity(intent);
 
-        // Handle the camera action
-    } else if (id == R.id.nav_gallery) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
 
-        CameraFragment fragment = new CameraFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_main_layout, fragment).commit();
+            CameraFragment fragment = new CameraFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main_layout, fragment).commit();
 
-    } else if (id == R.id.nav_slideshow) {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
-        intentIntegrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
+        } else if (id == R.id.nav_slideshow) {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+            intentIntegrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
 
-    } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_manage) {
 
-    } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) {
 
-    } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send) {
 
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
-
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    drawer.closeDrawer(GravityCompat.START);
-    return true;
-}
 
 }
