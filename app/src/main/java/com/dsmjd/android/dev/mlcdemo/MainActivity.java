@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CharSequence[] items = {"相册", "相机"};
+                CharSequence[] items = {"相册", "x相机"};
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("选择图片来源")
                         .setItems(items, new DialogInterface.OnClickListener() {
