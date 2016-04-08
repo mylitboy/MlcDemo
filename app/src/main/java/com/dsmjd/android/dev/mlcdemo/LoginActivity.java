@@ -165,29 +165,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        //TODO
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url("http://121.43.225.110:8080/base/user/login.action").build();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-e.printStackTrace();
-                Log.e("MlcDemoErr",e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Log.e("MlcDemo",response.body().toString());
-            }
-        });
-
-        Response response = okHttpClient.newCall(request).execute();
-        if(response.isSuccessful()){
-            System.out.println(response.code());
-            System.out.println(response.body().string());
-        }
-    }
         boolean cancel = false;
         View focusView = null;
 
