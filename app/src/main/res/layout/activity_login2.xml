@@ -42,7 +42,7 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="wefwef@wefw.com" />
+                    android:text="18000000000" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +61,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="fwefwef" />
+                    android:text="180000" />
 
             </android.support.design.widget.TextInputLayout>
 

@@ -31,6 +31,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dsmjd.android.dev.mlcdemo.models.BaseResult;
+import com.dsmjd.android.dev.mlcdemo.models.User;
+import com.dsmjd.android.dev.mlcdemo.models.UserResult;
 import com.dsmjd.android.dev.mlcdemo.utils.OkHttpUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -169,36 +172,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String password = mPasswordView.getText().toString();
 
 
-        try {
-
-            OkHttpUtils.getBackString("http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action", new OkHttpUtils.OkCallBack<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    Log.e("xxxxxxxxxx", "dddddddddddddddddddddd");
-                    Log.e("xxxxxxxxx333333333x", s);
-                }
-            });
-
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("user.item1", "18000000000");
-            params.put("user.password", "180000");
-
-            OkHttpUtils.postBackString("http://121.43.225.110:8080/base/user/login", params, new OkHttpUtils.OkCallBack<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    Log.e("ddddddddddddddd", s);
-                    //if (response.body().toString().equals("")) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    // }
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         boolean cancel = false;
         View focusView = null;
 
@@ -225,17 +198,55 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
+
+
+            try {
+
+//            OkHttpUtils.doGet("http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action", new OkHttpUtils.OkCallBack<String>() {
+//                @Override
+//                public void onSuccess(String s) {
+//                    Log.e("xxxxxxxxxx", "dddddddddddddddddddddd");
+//                    Log.e("xxxxxxxxx333333333x", s);
+//                }
+//            });
+
+                Map<String, String> params2 = new HashMap<String, String>();
+                params2.put("user.item1", email);
+                params2.put("user.password",password);
+
+                OkHttpUtils.doPost("http://121.43.225.110:8080/base/user/login", params2, new OkHttpUtils.OkCallBack<BaseResult<UserResult>>() {
+                    @Override
+                    public void onSuccess(BaseResult<UserResult> result) {
+                        Log.e("ddddddddddddddd", result.toString());
+                        if (result.status==1) {
+                            //成功
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+
+                        } else {
+                            //失败
+                            mPasswordView.setError(getString(R.string.error_incorrect_password));
+                            mPasswordView.requestFocus();
+                        }
+                    }
+                });
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+//            showProgress(true);
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("1");
     }
 
     private boolean isPasswordValid(String password) {
@@ -358,13 +369,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
+            try {
+
+//            OkHttpUtils.doGet("http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action", new OkHttpUtils.OkCallBack<String>() {
+//                @Override
+//                public void onSuccess(String s) {
+//                    Log.e("xxxxxxxxxx", "dddddddddddddddddddddd");
+//                    Log.e("xxxxxxxxx333333333x", s);
+//                }
+//            });
+
+                Map<String, String> params2 = new HashMap<String, String>();
+                params2.put("user.item1", mEmail);
+                params2.put("user.password",mPassword);
+
+                OkHttpUtils.doPost("http://121.43.225.110:8080/base/user/login", params2, new OkHttpUtils.OkCallBack<BaseResult<UserResult>>() {
+                    @Override
+                    public void onSuccess(BaseResult<UserResult> result) {
+                        Log.e("ddddddddddddddd", result.toString());
+                        if (result.status==1) {
+                            //成功
+//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                            startActivity(intent);
+
+                        } else {
+                            //失败
+                        }
+                    }
+                });
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+//
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mEmail)) {
+//                    // Account exists, return true if the password matches.
+//                    return pieces[1].equals(mPassword);
+//                }
+//            }
 
             // TODO: register the new account here.
             return true;
@@ -376,6 +421,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

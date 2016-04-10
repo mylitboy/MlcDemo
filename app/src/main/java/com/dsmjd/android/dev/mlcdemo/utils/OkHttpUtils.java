@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.dsmjd.android.dev.mlcdemo.MainActivity;
+import com.dsmjd.android.dev.mlcdemo.models.BaseResult;
+import com.dsmjd.android.dev.mlcdemo.models.OkResult;
+import com.dsmjd.android.dev.mlcdemo.models.UserResult;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 import com.squareup.okhttp.Callback;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.CharBuffer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,42 +30,41 @@ import java.util.Set;
 public class OkHttpUtils {
 
     public static void main(String[] arg) {
-        OkHttpUtils.getBackJsonObj("http://192.168.3.43:8080/web/login.action", new OkCallBack<User>() {
+//        String url = "http://121.43.225.110:8080/base/user/login";
+        String url = "http://192.168.3.43:8080/web/login.action";
+//        String url = "http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action";
+        Map<String,String> params = new HashMap<String,String>();
+        params.put("user.itme1","18000000000");
+        params.put("user.password","180000");
+        OkHttpUtils.doPost(url,params, new OkCallBack<BaseResult<UserResult>>() {
             @Override
-            public void onSuccess(User s) {
+            public void onSuccess(BaseResult<UserResult> s) {
                 System.out.println(s);
             }
         });
-//        OkHttpUtils.getBackString("http://121.43.225.110:8080/base/user/login", new OkCallBack<String>() {
-//            @Override
-//            public void onSuccess(String s) {
-//                System.out.println(s);
-//            }
-//        });
-
-
-//        OkHttpUtils.getBackString("http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action", new OkCallBack<String>() {
-//            @Override
-//            public void onSuccess(String s) {
-//                System.out.println(s);
-//                Log.e("xxxxxxxxxx", "dddddddddddddddddddddd");
-//                Log.e("xxxxxxxxx333333333x", s);
-//            }
-//        });
     }
+
+    public static void doGet(String url, OkCallBack okCallBack) {
+        Request request = buildGetRequest(url);
+        callRequest(request, okCallBack);
+    }
+
+    public static void doPost(String url, Map<String, String> params, OkCallBack okCallBack) {
+        Request request = buildPostRequest(url, map2Body(params));
+        callRequest(request, okCallBack);
+    }
+
 
     public static abstract class OkCallBack<T> {
         Type mType;
-        public OkCallBack()
-        {
+
+        public OkCallBack() {
             mType = getSuperclassTypeParameter(getClass());
         }
 
-        static Type getSuperclassTypeParameter(Class<?> subclass)
-        {
+        static Type getSuperclassTypeParameter(Class<?> subclass) {
             Type superclass = subclass.getGenericSuperclass();
-            if (superclass instanceof Class)
-            {
+            if (superclass instanceof Class) {
                 throw new RuntimeException("Missing type parameter.");
             }
             ParameterizedType parameterized = (ParameterizedType) superclass;
@@ -76,17 +79,7 @@ public class OkHttpUtils {
         }
     }
 
-    public static void getBackString(String url, OkCallBack okCallBack) {
-        Request request = buildGetRequest(url);
-        callBackString(request, okCallBack);
-    }
-
-    public static void getBackJsonObj(String url,OkCallBack okCallBack){
-        Request request = buildGetRequest(url);
-        callBackJsonObj(request,okCallBack);
-    }
-
-    private static void callBackJsonObj(Request request, final OkCallBack okCallBack) {
+    private static void callRequest(Request request, final OkCallBack okCallBack) {
         getOkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -96,15 +89,20 @@ public class OkHttpUtils {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                Gson gson = new Gson();
-                Object person = gson.fromJson(response.body().charStream(), okCallBack.mType);
-                okCallBack.onSuccess(person);
+                if (okCallBack.mType == String.class) {
+                    okCallBack.onSuccess(response.body().string());
+                } else {
+                    try {
+                        Gson gson = new Gson();
+                        Object person = gson.fromJson(response.body().charStream(), okCallBack.mType);
+                        okCallBack.onSuccess(person);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        okCallBack.onSuccess(response.body().string());
+                    }
+                }
             }
         });
-    }
-    public static void postBackString(String url, Map<String, String> params, OkCallBack okCallBack) {
-        Request request = buildPostRequest(url, map2Body(params));
-        callBackString(request, okCallBack);
     }
 
     private static RequestBody map2Body(Map<String, String> params) {
@@ -116,39 +114,6 @@ public class OkHttpUtils {
             }
         }
         return builder.build();
-    }
-
-    private static void callBackString(Request request, final OkCallBack okCallBack) {
-        getOkHttpClient().newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-//                Log.e("MlcDemo", "error");
-                System.err.println("OnFailure");
-                okCallBack.onFailed(request, e);
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Gson gson = new Gson();
-                Result person = gson.fromJson(response.body().charStream(), Result.class);
-
-                char[] buffer = new char[1024];
-                response.body().charStream().read(buffer);
-                System.out.println(buffer);
-                okCallBack.onSuccess(response.body().string());
-
-
-//                Log.e("MlcDemoxxxxxxxxxxxxxx", response.message());
-            }
-        });
-    }
-    class Result{
-        String status;
-        String msg;
-    }
-
-    class User extends Result{
-
     }
 
 
