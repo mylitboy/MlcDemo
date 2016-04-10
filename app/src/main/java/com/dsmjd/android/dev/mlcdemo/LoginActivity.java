@@ -3,6 +3,7 @@ package com.dsmjd.android.dev.mlcdemo;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,8 +31,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dsmjd.android.dev.mlcdemo.utils.OkHttpUtils;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -155,6 +167,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+
+
+        try {
+
+            OkHttpUtils.getBackString("http://121.43.225.110:8080/greentown/greentown/syncGreenTownUser.action", new OkHttpUtils.OkCallBack<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    Log.e("xxxxxxxxxx", "dddddddddddddddddddddd");
+                    Log.e("xxxxxxxxx333333333x", s);
+                }
+            });
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("user.item1", "18000000000");
+            params.put("user.password", "180000");
+
+            OkHttpUtils.postBackString("http://121.43.225.110:8080/base/user/login", params, new OkHttpUtils.OkCallBack<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    Log.e("ddddddddddddddd", s);
+                    //if (response.body().toString().equals("")) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    // }
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         boolean cancel = false;
         View focusView = null;
